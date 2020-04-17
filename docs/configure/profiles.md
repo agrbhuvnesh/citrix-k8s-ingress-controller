@@ -22,8 +22,8 @@ The Citrix ingress controller provides the following two smart annotations for H
 
 | Smart annotation | Description | Sample |
 | ---------------- | ------------ | ----- |
-| `ingress.citrix.com/frontend-httpprofile` | Use this annotation to create the front-end HTTP profile (**Client Plane**) | `ingress.citrix.com/frontend-httpprofile: '{"dropinvalreqs":"enabled", "webSocket" : ""enabled"}'`  |
-| `ingress.citrix.com/backend-httpprofile` | Use this annotation to create the back-end HTTP profile (**Server Plane**). </br>**Note:** Ensure that you manually enable the HTTP related global parameters on the Citrix ADC. </br> For example, to use HTTP2 at the back end (**Server Plane**), ensure that you can enable `HTTP2Serverside` global parameter in the Citrix ADC. For more information, see [Configurating HTTP2](https://docs.citrix.com/en-us/citrix-adc/13/system/http-configurations/configuring-http2.html). | `ingress.citrix.com/backend-httpprofile: '{"app-1": {"dropinvalreqs":"ENABLED", "webSocket" : ""ENABLED"}}'`  |
+| `ingress.citrix.com/frontend-httpprofile` | Use this annotation to create the front-end HTTP profile (**Client Plane**) | `ingress.citrix.com/frontend-httpprofile: '{"dropinvalreqs":"enabled", "webSocket" : "enabled"}'`  |
+| `ingress.citrix.com/backend-httpprofile` | Use this annotation to create the back-end HTTP profile (**Server Plane**). </br>**Note:** Ensure that you manually enable the HTTP related global parameters on the Citrix ADC. </br> For example, to use HTTP2 at the back end (**Server Plane**), ensure that you can enable `HTTP2Serverside` global parameter in the Citrix ADC. For more information, see [Configurating HTTP2](https://docs.citrix.com/en-us/citrix-adc/13/system/http-configurations/configuring-http2.html). | `ingress.citrix.com/backend-httpprofile: '{"app-1": {"dropinvalreqs":"ENABLED", "webSocket" : "ENABLED"}}'`  |
 
 ## TCP profile
 
@@ -42,7 +42,12 @@ An [SSL profile](https://docs.citrix.com/en-us/citrix-adc/13/ssl/ssl-profiles.ht
 
 ### Prerequisites
 
-On the Citrix ADC, by default, SSL profile is not enable on the Ingress Citrix ADC. Ensure that you manually enable SSL profile on the Citrix ADC. Enabling the SSL profile overrides all the existing SSL related setting on the Citrix ADC, for detailed information on SSL profiles, see [SSL profiles](https://docs.citrix.com/en-us/citrix-adc/13/ssl/ssl-profiles.html).
+On the Citrix ADC, by default, SSL profile is not enable on the Ingress Citrix ADC. Ensure that you manually enable SSL profile on the Citrix ADC. Enabling the SSL profile overrides all the existing SSL related setting on the Citrix ADC, for detailed information on SSL profiles, see [SSL profiles](https://docs.citrix.com/en-us/citrix-adc/13/ssl/ssl-profiles/ssl-enabling-the-default-profile.html).
+To enable default SSL profile, please run below command on ADC CLI
+
+set ssl parameter -defaultProfile ENABLED
+    Save your configuration before enabling the Default profile. You cannot undo the changes. Are you sure you want to enable the Default profile? [Y/N]Y
+Done
 
 SSL profiles are classified into two categories:
 
@@ -56,7 +61,7 @@ The Citrix ingress controller provides the following two smart annotations for S
 | Smart annotation | Description | Sample |
 | ---------------- | ------------ | ----- |
 | `ingress.citrix.com/frontend-sslprofile` | Use this annotation to create the front end SSL profile (**Client Plane**). The front end SSL profile is required only if you have enabled TLS on the Client Plane. | `ingress.citrix.com/frontend-sslprofile: '{"hsts":"enabled", "tls12" : "enabled"}'`  |
-| `ingress.citrix.com/backend-sslprofile` | Use this annotation to create the back-end SSL profile (**Server Plane**). The SSL back end profile is required only if you use the [ingress.citrix.com/secure-backend](https://developer-docs.citrix.com/projects/citrix-k8s-ingress-controller/en/latest/configure/annotations/) annotation for the back-end. | `ingress.citrix.com/backend-sslprofile: '{"citrix-svc":{"hsts":"enabled", "tls1" : ""enabled"}}'`  |
+| `ingress.citrix.com/backend-sslprofile` | Use this annotation to create the back-end SSL profile (**Server Plane**). The SSL back end profile is required only if you use the [ingress.citrix.com/secure-backend](https://developer-docs.citrix.com/projects/citrix-k8s-ingress-controller/en/latest/configure/annotations/) annotation for the back-end. | `ingress.citrix.com/backend-sslprofile: '{"citrix-svc":{"hsts":"enabled", "tls1" : "enabled"}}'`  |
 
 > **IMPORTANT:**
 > SSL profile does not enable you to configure SSL certificate.
@@ -168,7 +173,7 @@ metadata:
   # /* The CS virtual server is derived from the combination of insecure-port/secure-port, frontend-ip, and secure-service-type/insecure-service-type annotations. */
     ingress.citrix.com/frontend-ip: "10.106.172.22"
     ingress.citrix.com/secure-port: "443"
-    ingress.citrix.com/backend-sslprofile: '{"hotdrink":{"SNIEnable": "enabled"}}'
+    ingress.citrix.com/backend-sslprofile: '{"hotdrink":{"snienable": "enabled"}}'
     ingress.citrix.com/backend-httpprofile: '{"hotdrink":{"markhttp09inval": "disabled"}}'
     ingress.citrix.com/backend-tcpprofile: '{"hotdrink":{"sack":"enabled"}}'
     ingress.citrix.com/secure-backend: '{"hotdrink":"true"}'
